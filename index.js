@@ -50,6 +50,13 @@ async function run() {
             res.send(users);
         });
 
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin })
+        })
+
         app.put('/user/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
             const requester = req.decoded.email;
@@ -65,7 +72,7 @@ async function run() {
             else {
                 res.status(403).send({ message: 'forbidden' });
             }
-        })
+        });
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
             const user = req.body;
